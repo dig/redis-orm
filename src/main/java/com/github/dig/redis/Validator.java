@@ -2,6 +2,8 @@ package com.github.dig.redis;
 
 import com.github.dig.redis.annotation.Attribute;
 import com.github.dig.redis.annotation.Id;
+import com.github.dig.redis.converter.Converter;
+import com.github.dig.redis.converter.ConverterRegistry;
 import com.github.dig.redis.exception.MissingIdException;
 import com.github.dig.redis.exception.NoAttributeException;
 import com.github.dig.redis.exception.UnsupportedAttributeException;
@@ -44,16 +46,12 @@ public class Validator {
 
     public static void checkValidAttribute(@NonNull Field field) {
         Class<?> type = field.getType();
-        if ((type.equals(Byte.class) || type.equals(byte.class))
-                || type.equals(Short.class) || type.equals(short.class)
-                || type.equals(Integer.class) || type.equals(int.class)
-                || type.equals(Float.class) || type.equals(float.class)
-                || type.equals(Double.class) || type.equals(double.class)
-                || type.equals(Long.class) || type.equals(long.class)
-                || type.equals(Boolean.class) || type.equals(boolean.class)
-                || type.equals(String.class)) {
+        ConverterRegistry registry = ConverterRegistry.getInstance();
+        Optional<Converter> converterOptional = registry.getConverters().stream()
+                .filter(cvt -> cvt.canApply(type))
+                .findFirst();
 
-        } else {
+        if (!converterOptional.isPresent()) {
             throw new UnsupportedAttributeException();
         }
     }

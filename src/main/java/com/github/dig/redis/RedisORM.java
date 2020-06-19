@@ -2,6 +2,8 @@ package com.github.dig.redis;
 
 import com.github.dig.redis.annotation.Attribute;
 import com.github.dig.redis.annotation.Id;
+import com.github.dig.redis.converter.Converter;
+import com.github.dig.redis.converter.ConverterRegistry;
 import com.google.common.collect.ImmutableMap;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
@@ -61,11 +63,24 @@ public class RedisORM {
         return (T) object;
     }
 
+    private static Object convert(@NonNull Field field, @NonNull String value) {
+        ConverterRegistry registry = ConverterRegistry.getInstance();
+        Optional<Converter> converterOptional = registry.getConverters().stream()
+                .filter(cvt -> cvt.canApply(field.getType()))
+                .findFirst();
+
+        if (converterOptional.isPresent()) {
+            return converterOptional.get().from(value);
+        }
+
+        return null;
+    }
+
     private static void setField(@NonNull Object newInstance, @NonNull Field field, @NonNull String value)
             throws IllegalAccessException {
         if (field.isAnnotationPresent(Attribute.class) || field.isAnnotationPresent(Id.class)) {
             field.setAccessible(true);
-            field.set(newInstance, Converter.convert(field, value));
+            field.set(newInstance, convert(field, value));
         }
     }
 
