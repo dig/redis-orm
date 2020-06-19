@@ -2,9 +2,9 @@ package com.github.dig.redis;
 
 import com.github.dig.redis.annotation.Attribute;
 import com.github.dig.redis.annotation.Id;
-import com.github.dig.redis.exception.RedisMissingIdException;
-import com.github.dig.redis.exception.RedisNoAttributeException;
-import com.github.dig.redis.exception.RedisUnsupportedAttributeException;
+import com.github.dig.redis.exception.MissingIdException;
+import com.github.dig.redis.exception.NoAttributeException;
+import com.github.dig.redis.exception.UnsupportedAttributeException;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @UtilityClass
-public class RedisValidator {
+public class Validator {
 
     public static void checkValidClass(Class<?> clazz) {
         int attributeNum = 0;
@@ -34,11 +34,11 @@ public class RedisValidator {
         }
 
         if (!hasId) {
-            throw new RedisMissingIdException();
+            throw new MissingIdException();
         }
 
         if (attributeNum <= 0) {
-            throw new RedisNoAttributeException();
+            throw new NoAttributeException();
         }
     }
 
@@ -54,7 +54,7 @@ public class RedisValidator {
                 || type.equals(String.class)) {
 
         } else {
-            throw new RedisUnsupportedAttributeException();
+            throw new UnsupportedAttributeException();
         }
     }
 
