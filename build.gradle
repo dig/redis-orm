@@ -1,0 +1,19 @@
+plugins {
+    id 'java'
+}
+
+group 'com.github.dig.redis'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    annotationProcessor 'org.projectlombok:lombok:1.18.8'
+    compile 'org.projectlombok:lombok:1.18.8'
+    compile group: 'redis.clients', name: 'jedis', version: '3.1.0'
+    compile group: 'com.google.guava', name: 'guava', version: '11.0.2'
+}
