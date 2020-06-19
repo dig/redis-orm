@@ -1,6 +1,7 @@
 package com.github.dig.redis;
 
 import com.github.dig.redis.annotation.Attribute;
+import com.github.dig.redis.annotation.Id;
 import com.google.common.collect.ImmutableMap;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
@@ -62,7 +63,7 @@ public class RedisORM {
 
     private static void setField(@NonNull Object newInstance, @NonNull Field field, @NonNull String value)
             throws IllegalAccessException {
-        if (field.isAnnotationPresent(Attribute.class)) {
+        if (field.isAnnotationPresent(Attribute.class) || field.isAnnotationPresent(Id.class)) {
             field.setAccessible(true);
             field.set(newInstance, RedisConverter.convert(field, value));
         }
