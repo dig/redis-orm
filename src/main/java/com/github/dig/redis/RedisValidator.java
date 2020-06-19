@@ -5,6 +5,7 @@ import com.github.dig.redis.annotation.Id;
 import com.github.dig.redis.exception.RedisMissingIdException;
 import com.github.dig.redis.exception.RedisNoAttributeException;
 import com.github.dig.redis.exception.RedisUnsupportedAttributeException;
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 import java.lang.reflect.Field;
@@ -41,10 +42,9 @@ public class RedisValidator {
         }
     }
 
-    public static void checkValidAttribute(Field field) {
+    public static void checkValidAttribute(@NonNull Field field) {
         Class<?> type = field.getType();
         if ((type.equals(Byte.class) || type.equals(byte.class))
-                || type.equals(Character.class) || type.equals(char.class)
                 || type.equals(Short.class) || type.equals(short.class)
                 || type.equals(Integer.class) || type.equals(int.class)
                 || type.equals(Float.class) || type.equals(float.class)
@@ -72,6 +72,17 @@ public class RedisValidator {
         return Arrays.stream(clazz.getFields())
                 .filter(field -> field.isAnnotationPresent(Attribute.class))
                 .collect(Collectors.toSet());
+    }
+
+    public static String fromField(@NonNull Field field, @NonNull Object instance) {
+        checkValidAttribute(field);
+        Object value = null;
+        try {
+            value = field.get(instance);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return String.valueOf(value);
     }
 
 }
