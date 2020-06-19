@@ -5,7 +5,7 @@ import lombok.experimental.UtilityClass;
 import java.lang.reflect.Field;
 
 @UtilityClass
-public class RedisConverter {
+public class Converter {
 
     public static Object convert(Field field, String value) {
         return convert(field.getType(), value);

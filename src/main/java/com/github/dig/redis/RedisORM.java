@@ -17,23 +17,23 @@ public class RedisORM {
 
     public static void save(@NonNull Jedis jedis, Object object) {
         Class<?> clazz = object.getClass();
-        RedisValidator.checkValidClass(clazz);
+        Validator.checkValidClass(clazz);
 
-        Optional<Field> idOptional = RedisValidator.getId(clazz);
+        Optional<Field> idOptional = Validator.getId(clazz);
         idOptional.ifPresent(idField -> {
-            Set<Field> attributes = RedisValidator.getAttributes(clazz);
+            Set<Field> attributes = Validator.getAttributes(clazz);
 
             ImmutableMap.Builder<String, String> builder = ImmutableMap.<String, String>builder();
             for (Field field : attributes) {
-                builder.put(field.getName(), RedisValidator.fromField(field, object));
+                builder.put(field.getName(), Validator.fromField(field, object));
             }
 
-            jedis.hmset(String.format("%s:%s", clazz.getName(), RedisValidator.fromField(idField, object)), builder.build());
+            jedis.hmset(String.format("%s:%s", clazz.getName(), Validator.fromField(idField, object)), builder.build());
         });
     }
 
     public static <T> T get(@NonNull Jedis jedis, Class<?> clazz, @NonNull Object id) {
-        RedisValidator.checkValidClass(clazz);
+        Validator.checkValidClass(clazz);
 
         Object object = null;
         try {
@@ -65,7 +65,7 @@ public class RedisORM {
             throws IllegalAccessException {
         if (field.isAnnotationPresent(Attribute.class) || field.isAnnotationPresent(Id.class)) {
             field.setAccessible(true);
-            field.set(newInstance, RedisConverter.convert(field, value));
+            field.set(newInstance, Converter.convert(field, value));
         }
     }
 
