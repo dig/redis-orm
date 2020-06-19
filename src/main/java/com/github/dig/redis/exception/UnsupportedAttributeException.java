@@ -1,4 +1,4 @@
 package com.github.dig.redis.exception;
 
-public class RedisUnsupportedAttributeException extends RuntimeException {
+public class UnsupportedAttributeException extends RuntimeException {
 }
